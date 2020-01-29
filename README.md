@@ -81,3 +81,33 @@
     ```sh
     docker rm myapp
     ```
+
+## Build notes
+
+1. `build.sh`
+
+    Build all GA version from v7
+
+2. `build.beta.sh`
+
+    Build all BETA version from v7
+
+3. `build.rc.sh`
+
+    Build all RC version from v7
+
+4. `build.next.sh`
+
+    Build all NEXT version from v7
+
+5. `build.v6.0.sh`
+
+    Build all GA version for v6.0.x
+
+6. `build.v6.1.sh`
+
+    Build all GA version for v6.1.x
+
+7. `build.v6.2.sh`
+
+    Build all GA version for v6.2.x

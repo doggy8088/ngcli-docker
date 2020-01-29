@@ -8,11 +8,10 @@ NpmVersions=$(mktemp /tmp/NpmVersions.XXXXXX.json)
 wget -q https://registry.hub.docker.com/v1/repositories/willh/ngcli/tags -O -   | jq '[.[].name]' > "$DockerHubTags"
 
 npm view @angular/cli versions --json \
-    | jq '[.[] | select(. | startswith("9."))]' \
+    | jq '[.[] | select(. | startswith("1.") | not)]' \
+    | jq '[.[] | select(. | startswith("6.") | not)]' \
     | jq '[.[] | select(. | contains("-rc"))]' \
     > "$NpmVersions"
-
-    # | jq '[.[] | select(. | contains("-rc") | not)]' \
 
 while read n; do
     IsCreated=0
@@ -41,7 +40,7 @@ while read n; do
         echo --------------------------------------------------------------
         echo "Removing willh/ngcli:$v locally."
         echo --------------------------------------------------------------
-        # docker image rm willh/ngcli:$v
+        docker image rm willh/ngcli:$v
     fi
 
 done < <(jq -S -c '.[]' "$NpmVersions")
