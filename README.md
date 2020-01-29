@@ -3,7 +3,7 @@
 ## Features
 
 - Included all `@angular/cli` releases starts from `v6.0.0` except some buggy releases.
-  - Buggy releases: `6.0.4`, `6.0.6`, `6.0.9`
+  - Buggy releases: `6.0.4` ([#16789](https://github.com/angular/angular-cli/issues/16789))
 - Includes a default app created by `ng new` command in `/app` folder.
 - Turn off Google Analytics by default.
 
@@ -42,6 +42,7 @@
     docker run --name myapp -it -p 4200:4200 -v G:\ng8:/app --entrypoint bash willh/ngcli:8.3.23
     cd /
     ng new app --defaults --skip-git
+    cd /app
     ng serve --disable-host-check --host 0.0.0.0 --poll 1000
     ```
 
