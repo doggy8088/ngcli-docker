@@ -9,8 +9,7 @@ wget -q https://registry.hub.docker.com/v1/repositories/willh/ngcli/tags -O -   
 
 npm view @angular/cli versions --json \
     | jq '[.[] | select(. | startswith("9."))]' \
-    | jq '[.[] | select(. | contains("-next") | not)]' \
-    | jq '[.[] | select(. | contains("-beta") | not)]' \
+    | jq '[.[] | select(. | contains("-rc"))]' \
     > "$NpmVersions"
 
     # | jq '[.[] | select(. | contains("-rc") | not)]' \
