@@ -33,7 +33,7 @@ while read n; do
         echo --------------------------------------------------------------
         echo "Creating willh/ngcli:$v ..."
         echo --------------------------------------------------------------
-        docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile .
+        docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile.v1 .
         echo --------------------------------------------------------------
         echo "Pushing willh/ngcli:$v to Docker Hub ..."
         echo --------------------------------------------------------------
