@@ -19,9 +19,6 @@ while read n; do
     IsCreated=0
     v=${n//\"/}
 
-    # Buggy releases
-    [ "$v" = "6.0.4" ] && continue
-
     # echo Npm Version: $v
     while read d; do
         if [ "$v" = "${d//\"/}" ]
@@ -38,7 +35,12 @@ while read n; do
         echo --------------------------------------------------------------
         echo "Creating willh/ngcli:$v ..."
         echo --------------------------------------------------------------
-        docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile.v6.0-6.1 .
+        if [ "$v" = "6.0.4" ]
+        then
+            docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile.v6.0.4 .
+        else
+            docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile.v6.0-6.1 .
+        fi
         echo --------------------------------------------------------------
         echo "Pushing willh/ngcli:$v to Docker Hub ..."
         echo --------------------------------------------------------------
