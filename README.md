@@ -3,7 +3,7 @@
 ## Features
 
 - Included all `@angular/cli` releases starts from `v1.0.0` except some buggy releases.
-- Includes a default app created by `ng new` command in `/app` folder.
+- Includes a default app created by `ng new` command that located in `/app` folder.
 - Turn off Google Analytics by default.
 
 ## Usage
@@ -81,7 +81,7 @@
     docker rm myapp
     ```
 
-11. If you want to include some dev tools/utilities such as vim, net-tools, ... etc. inside container, check the following commands.
+11. If you want to include some dev tools/utilities such as `vim`, `net-tools`, ... etc. inside container, check the following commands.
 
     ```sh
     RUN apt-get update \
