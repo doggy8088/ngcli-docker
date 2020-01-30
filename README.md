@@ -2,8 +2,7 @@
 
 ## Features
 
-- Included all `@angular/cli` releases starts from `v6.0.0` except some buggy releases.
-  - Buggy releases: `6.0.4` ([#16789](https://github.com/angular/angular-cli/issues/16789))
+- Included all `@angular/cli` releases starts from `v1.0.0` except some buggy releases.
 - Includes a default app created by `ng new` command in `/app` folder.
 - Turn off Google Analytics by default.
 
@@ -80,6 +79,16 @@
 
     ```sh
     docker rm myapp
+    ```
+
+11. If you want to include some dev tools/utilities such as vim, net-tools, ... etc. inside container, check the following commands.
+
+    ```sh
+    RUN apt-get update \
+        && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+        && apt-get install -y apt-utils 2>&1 | grep -v "debconf: delaying package configuration, since apt-utils is not installed" \
+        && apt-get install -y --no-install-recommends apt-utils net-tools vim \
+        && rm -rf /var/lib/apt/lists/*
     ```
 
 ## Build notes
