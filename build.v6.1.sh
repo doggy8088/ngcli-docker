@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# sudo apt-get install jq -y
-
 DockerHubTags=$(mktemp /tmp/DockerHubTags.XXXXXX.json)
 NpmVersions=$(mktemp /tmp/NpmVersions.XXXXXX.json)
 
@@ -12,6 +10,7 @@ npm view @angular/cli versions --json \
     | jq '[.[] | select(. | contains("-next") | not)]' \
     | jq '[.[] | select(. | contains("-rc") | not)]' \
     | jq '[.[] | select(. | contains("-beta") | not)]' \
+    | jq 'reverse' \
     > "$NpmVersions"
 
 while read n; do
@@ -41,7 +40,7 @@ while read n; do
         echo --------------------------------------------------------------
         echo "Removing willh/ngcli:$v locally."
         echo --------------------------------------------------------------
-        # docker image rm willh/ngcli:$v
+        docker image rm willh/ngcli:$v
     fi
 
 done < <(jq -S -c '.[]' "$NpmVersions")

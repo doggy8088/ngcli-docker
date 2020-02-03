@@ -29,12 +29,10 @@ ENV NG_CLI_ANALYTICS=off \
 
 # Install Angular CLI
 RUN npm install -g @angular/cli@${CLI_VERSION} \
-    && ng new demo1 --skip-git \
+    && ng new demo1 --defaults --skip-git \
     && npm cache clean --force \
     && mv /demo1 /app \
     && cd /app \
-    && npm install rxjs@6.0.0 \
-    && npm install typescript@^2.9.2 \
     && npx webdriver-manager update \
     && sed -i "s/browsers: \['Chrome'\],/browsers: ['ChromiumNoSandbox'],customLaunchers: {ChromiumNoSandbox: {base: 'ChromiumHeadless',flags: ['--no-sandbox','--headless','--disable-gpu','--disable-translate','--disable-extensions']}},/g" src/karma.conf.js \
     && sed -i "s/browserName: 'chrome'/browserName: 'chrome', chromeOptions: {args: ['--no-sandbox','--headless','--disable-gpu','--disable-translate','--disable-extensions']}/g" e2e/protractor.conf.js \

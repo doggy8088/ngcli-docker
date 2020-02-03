@@ -1,24 +1,21 @@
 #!/bin/bash
 
-# sudo apt-get install jq -y
-
 DockerHubTags=$(mktemp /tmp/DockerHubTags.XXXXXX.json)
 NpmVersions=$(mktemp /tmp/NpmVersions.XXXXXX.json)
 
 wget -q https://registry.hub.docker.com/v1/repositories/willh/ngcli/tags -O -   | jq '[.[].name]' > "$DockerHubTags"
-
 
 npm view @angular/cli versions --json \
     | jq '[.[] | select(. | startswith("6.0"))]' \
     | jq '[.[] | select(. | contains("-next") | not)]' \
     | jq '[.[] | select(. | contains("-rc") | not)]' \
     | jq '[.[] | select(. | contains("-beta") | not)]' \
+    | jq 'reverse' \
     > "$NpmVersions"
 
 while read n; do
     IsCreated=0
     v=${n//\"/}
-
     # echo Npm Version: $v
     while read d; do
         if [ "$v" = "${d//\"/}" ]
@@ -48,7 +45,7 @@ while read n; do
         echo --------------------------------------------------------------
         echo "Removing willh/ngcli:$v locally."
         echo --------------------------------------------------------------
-        # docker image rm willh/ngcli:$v
+        docker image rm willh/ngcli:$v
     fi
 
 done < <(jq -S -c '.[]' "$NpmVersions")

@@ -6,40 +6,16 @@ NpmVersions=$(mktemp /tmp/NpmVersions.XXXXXX.json)
 wget -q https://registry.hub.docker.com/v1/repositories/willh/ngcli/tags -O -   | jq '[.[].name]' > "$DockerHubTags"
 
 npm view @angular/cli versions --json \
-    | jq '[.[] | select(. | startswith("1."))]' \
+    | jq '[.[] | select(. | startswith("8."))]' \
     | jq '[.[] | select(. | contains("-next") | not)]' \
     | jq '[.[] | select(. | contains("-rc") | not)]' \
     | jq '[.[] | select(. | contains("-beta") | not)]' \
+    | jq 'reverse' \
     > "$NpmVersions"
 
 while read n; do
     IsCreated=0
     v=${n//\"/}
-
-    # Buggy releases
-    [ "$v" = "1.4.0" ] && continue
-    [ "$v" = "1.4.1" ] && continue
-    [ "$v" = "1.4.2" ] && continue
-    [ "$v" = "1.4.3" ] && continue
-    [ "$v" = "1.4.4" ] && continue
-    [ "$v" = "1.4.5" ] && continue
-    [ "$v" = "1.4.6" ] && continue
-    [ "$v" = "1.4.7" ] && continue
-    [ "$v" = "1.4.8" ] && continue
-    [ "$v" = "1.4.9" ] && continue
-
-    [ "$v" = "1.5.0" ] && continue
-    [ "$v" = "1.5.1" ] && continue
-    [ "$v" = "1.5.2" ] && continue
-    [ "$v" = "1.5.3" ] && continue
-    [ "$v" = "1.5.4" ] && continue
-    [ "$v" = "1.5.5" ] && continue
-
-    [ "$v" = "1.6.0" ] && continue
-    [ "$v" = "1.6.1" ] && continue
-    [ "$v" = "1.6.2" ] && continue
-    [ "$v" = "1.6.3" ] && continue
-
     # echo Npm Version: $v
     while read d; do
         if [ "$v" = "${d//\"/}" ]
@@ -56,10 +32,11 @@ while read n; do
         echo --------------------------------------------------------------
         echo "Creating willh/ngcli:$v ..."
         echo --------------------------------------------------------------
-        docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile.v1 .
+        docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile .
         echo --------------------------------------------------------------
         echo "Pushing willh/ngcli:$v to Docker Hub ..."
         echo --------------------------------------------------------------
+        # echo docker push willh/ngcli:$v >> docker_push_v8.log
         docker push willh/ngcli:$v
         echo --------------------------------------------------------------
         echo "Removing willh/ngcli:$v locally."
