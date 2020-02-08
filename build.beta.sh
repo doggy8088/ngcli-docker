@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NGCLIVersions=""
+
 DockerHubTags=$(mktemp /tmp/DockerHubTags.XXXXXX.json)
 NpmVersions=$(mktemp /tmp/NpmVersions.XXXXXX.json)
 
@@ -31,10 +33,18 @@ while read n; do
         echo "Creating willh/ngcli:$v ..."
         echo --------------------------------------------------------------
         docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile .
+
         echo --------------------------------------------------------------
         echo "Pushing willh/ngcli:$v to Docker Hub ..."
         echo --------------------------------------------------------------
         docker push willh/ngcli:$v
+        if [ "$?" = "0" ]
+        then
+            NGCLIVersions="${NGCLIVersions}$v "
+        else
+            return 1
+        fi
+
         echo --------------------------------------------------------------
         echo "Removing willh/ngcli:$v locally."
         echo --------------------------------------------------------------
@@ -45,3 +55,5 @@ done < <(jq -S -c '.[]' "$NpmVersions")
 
 rm "$NpmVersions"
 rm "$DockerHubTags"
+
+echo "##vso[task.setvariable variable=NGCLIVersions]${NGCLIVersions}"

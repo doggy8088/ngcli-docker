@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This is an output variable for Azure Pipelines.
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#use-output-variables-from-tasks
+NGCLIVersions=""
+
 DockerHubTags=$(mktemp /tmp/DockerHubTags.XXXXXX.json)
 NpmVersions=$(mktemp /tmp/NpmVersions.XXXXXX.json)
 
@@ -8,9 +12,10 @@ wget -q https://registry.hub.docker.com/v1/repositories/willh/ngcli/tags -O -   
 npm view @angular/cli versions --json \
     | jq '[.[] | select(. | startswith("1.") | not)]' \
     | jq '[.[] | select(. | startswith("6.") | not)]' \
+    | jq '[.[] | select(. | startswith("7.") | not)]' \
     | jq '[.[] | select(. | contains("-next") | not)]' \
-    | jq '[.[] | select(. | contains("-rc") | not)]' \
     | jq '[.[] | select(. | contains("-beta") | not)]' \
+    | jq '[.[] | select(. | contains("-rc") | not)]' \
     > "$NpmVersions"
 
 while read n; do
@@ -33,10 +38,18 @@ while read n; do
         echo "Creating willh/ngcli:$v ..."
         echo --------------------------------------------------------------
         docker build -t willh/ngcli:$v --build-arg CLI_VERSION=$v -f Dockerfile .
+
         echo --------------------------------------------------------------
         echo "Pushing willh/ngcli:$v to Docker Hub ..."
         echo --------------------------------------------------------------
         docker push willh/ngcli:$v
+        if [ "$?" = "0" ]
+        then
+            NGCLIVersions="${NGCLIVersions}$v "
+        else
+            return 1
+        fi
+
         echo --------------------------------------------------------------
         echo "Removing willh/ngcli:$v locally."
         echo --------------------------------------------------------------
@@ -47,3 +60,5 @@ done < <(jq -S -c '.[]' "$NpmVersions")
 
 rm "$NpmVersions"
 rm "$DockerHubTags"
+
+echo "##vso[task.setvariable variable=NGCLIVersions]${NGCLIVersions}"
