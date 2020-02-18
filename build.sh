@@ -58,6 +58,12 @@ while read n; do
 
 done < <(jq -S -c '.[]' "$NpmVersions")
 
+if [ "${NGCLIVersions}" = "" ]
+then
+  echo "##vso[task.setvariable variable=agent.jobstatus;]canceled"
+  echo "##vso[task.complete result=Canceled;]DONE"
+fi
+
 rm "$NpmVersions"
 rm "$DockerHubTags"
 
