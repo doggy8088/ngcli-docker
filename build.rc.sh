@@ -55,11 +55,12 @@ done < <(jq -S -c '.[]' "$NpmVersions")
 
 if [ "${NGCLIVersions}" = "" ]
 then
-  echo "##vso[task.setvariable variable=agent.jobstatus;]canceled"
+  # echo "##vso[task.setvariable variable=agent.jobstatus;]canceled"
+  echo "##vso[task.setvariable variable=NGCLIVersions]canceled"
   echo "##vso[task.complete result=Canceled;]DONE"
+else
+  rm "$NpmVersions"
+  rm "$DockerHubTags"
+
+  echo "##vso[task.setvariable variable=NGCLIVersions]${NGCLIVersions}"
 fi
-
-rm "$NpmVersions"
-rm "$DockerHubTags"
-
-echo "##vso[task.setvariable variable=NGCLIVersions]${NGCLIVersions}"
