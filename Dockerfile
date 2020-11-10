@@ -11,7 +11,8 @@ ARG CLI_VERSION
 ENV NG_CLI_ANALYTICS=off
 
 # Install Angular CLI
-RUN npm install -g @angular/cli@${CLI_VERSION}
+RUN npm install -g @angular/cli@${CLI_VERSION} \
+    && ng config -g cli.warnings.versionMismatch false
 
 WORKDIR /app
 
