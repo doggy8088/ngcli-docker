@@ -28,8 +28,10 @@ ENV NG_CLI_ANALYTICS=off \
     CHROMIUM_BIN=/usr/bin/google-chrome
 
 # Install Angular CLI
-RUN npm install -g @angular/cli@${CLI_VERSION} \
-    && ng new demo1 --defaults --skip-git \
+RUN npm install -g @angular/cli@${CLI_VERSION}
+
+# Generate default Angular app
+RUN ng new demo1 --defaults --skip-git \
     && npm cache clean --force \
     && mv /demo1 /app \
     && cd /app \
