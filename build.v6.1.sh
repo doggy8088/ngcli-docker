@@ -3,7 +3,7 @@
 DockerHubTags=$(mktemp /tmp/DockerHubTags.XXXXXX.json)
 NpmVersions=$(mktemp /tmp/NpmVersions.XXXXXX.json)
 
-wget -q https://registry.hub.docker.com/v1/repositories/willh/ngcli/tags -O -   | jq '[.[].name]' > "$DockerHubTags"
+wget -q https://registry.hub.docker.com/v2/repositories/willh/ngcli/tags -O -   | jq '[.[].name]' > "$DockerHubTags"
 
 npm view @angular/cli versions --json \
     | jq '[.[] | select(. | startswith("6.1"))]' \
